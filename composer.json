@@ -1,7 +1,7 @@
 {
-    "name": "air/fcgi",
-	"description": "Simple FCGI",
-    "keywords": ["fcgi"],
+    "name": "air/fastcgi",
+	"description": "Simple FastCgi",
+    "keywords": ["FastCgi", "cgi"],
     "license": "MIT",
     "authors": [
         {
