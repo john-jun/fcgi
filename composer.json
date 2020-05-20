@@ -1,0 +1,29 @@
+{
+    "name": "air/fcgi",
+	"description": "Simple FCGI",
+    "keywords": ["fcgi"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "John",
+            "email": "53950451@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Air\\FCgi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Air\\FCgi\\Test\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    }
+}
