@@ -2,7 +2,10 @@
 namespace Air\FCgi\Test;
 
 use Air\FCgi\FrameParser;
+use Air\FCgi\Http\Content\MultipartContent;
 use Air\FCgi\Http\Content\UrlEncodedContent;
+use Air\FCgi\Http\Stdin\GetStdin;
+use Air\FCgi\Http\Stdin\PostStdin;
 use Air\FCgi\Http\Stdin\PutStdin;
 use Air\FCgi\Record\EndRequestRecord;
 use Air\FCgi\Request;
@@ -31,7 +34,7 @@ class RequestTest extends TestCase
      */
     public function message()
     {
-        $stdin = new PutStdin(new UrlEncodedContent(['a' => 'b']));
+        $stdin = new PostStdin(new MultipartContent(['composer' => './composer.json'], ['a' => 'b']));
         $stdin
             ->setRequestUri('poster/share/5ec2086f6da5862738153ffb')
             ->setScriptFilename('/mof/restful-social/public/index.php');
