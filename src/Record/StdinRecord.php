@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\Constant;
+use Air\FCgi\FastCGI;
 use Air\FCgi\Record;
 
 /**
@@ -19,9 +19,9 @@ class StdinRecord extends Record
      */
     public function __construct(string $contentData = '', int $requestId = null)
     {
-        $this->type = Constant::STDIN;
+        $this->type = FastCGI::STDIN;
 
-        $this->setRequestId($requestId ?? Constant::DEFAULT_REQUEST_ID);
+        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($contentData);
     }
 }

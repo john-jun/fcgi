@@ -1,7 +1,8 @@
 <?php
 namespace Air\FCgi\Test;
 
-use Air\FCgi\FrameParser;
+use Air\FCgi\FastCGI;
+use Air\FCgi\Parser;
 use Air\FCgi\Http\Content\MultipartContent;
 use Air\FCgi\Http\Content\UrlEncodedContent;
 use Air\FCgi\Http\Stdin\GetStdin;
@@ -41,15 +42,32 @@ class RequestTest extends TestCase
         $request->setKeepConn(true);
 
         $this->socket->connect();
-
         echo PHP_EOL . $this->socket->getConnectUseTime() . PHP_EOL;
+        $this->socket->send((string)$request);
 
-        $i = 0;
-        while ($i < 1) {
-            echo $this->socket->send((string)$request) . PHP_EOL;
-            var_dump($this->socket->recv(65535));
+        do {
+            $buffer = $this->socket->recv(FastCGI::HEADER_LEN);
+            if (strlen($buffer) < 8) {
+                continue;
+            }
 
-            $i++;
-        }
+            $header = unpack(FastCGI::HEADER_FORMAT, $buffer);
+            if (($length = $header['contentLength']) > 0) {
+                while ($length && ($data = $this->socket->recv($length)) !== false) {
+                    $length -= strlen($data);
+                    $buffer .= $data;
+                }
+            }
+
+            if (($length = $header['paddingLength']) > 0) {
+                while ($length && ($data = $this->socket->recv($length)) !== false) {
+                    $length -= strlen($data);
+                    $buffer .= $data;
+                }
+            }
+
+            var_dump(Parser::parseFrame($header, $buffer));
+            break;
+        } while (true);
     }
 }

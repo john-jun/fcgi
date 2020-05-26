@@ -12,17 +12,17 @@ class Record
     /**
      * @var int
      */
-    protected $type = Constant::UNKNOWN_TYPE;
+    protected $type = FastCGI::UNKNOWN_TYPE;
 
     /**
      * @var int
      */
-    protected $version = Constant::VERSION_1;
+    protected $version = FastCGI::VERSION_1;
 
     /**
      * @var int
      */
-    protected $requestId = Constant::DEFAULT_REQUEST_ID;
+    protected $requestId = FastCGI::DEFAULT_REQUEST_ID;
 
     /**
      * @var int
@@ -72,21 +72,20 @@ class Record
 
     /**
      * @param string $data
+     * @param array $header
      * @return static
      */
-    final public static function unpack(string $data): self
+    final public static function unpack(string $data, array $header = []): self
     {
         $self = new static();
-        [
-            $self->version,
-            $self->type,
-            $self->requestId,
-            $self->contentLength,
-            $self->paddingLength,
-            $self->reserved
-        ] = array_values(unpack(Constant::HEADER_FORMAT, $data));
+        $self->type = $header['type'];
+        $self->version = $header['version'];
+        $self->reserved = $header['reserved'];
+        $self->requestId = $header['requestId'];
+        $self->contentLength = $header['contentLength'];
+        $self->paddingLength = $header['paddingLength'];
 
-        $payload = substr($data, Constant::HEADER_LEN);
+        $payload = substr($data, FastCGI::HEADER_LEN);
         self::unpackPayload($self, $payload);
 
         if (get_called_class() !== __CLASS__ && $self->contentLength > 0) {
@@ -104,9 +103,9 @@ class Record
     {
         $this->contentLength = strlen($data);
 
-        if ($this->contentLength > Constant::MAX_CONTENT_LENGTH) {
-            $this->contentLength = Constant::MAX_CONTENT_LENGTH;
-            $this->contentData = substr($data, 0, Constant::MAX_CONTENT_LENGTH);
+        if ($this->contentLength > FastCGI::MAX_CONTENT_LENGTH) {
+            $this->contentLength = FastCGI::MAX_CONTENT_LENGTH;
+            $this->contentData = substr($data, 0, FastCGI::MAX_CONTENT_LENGTH);
         } else {
             $this->contentData = $data;
         }

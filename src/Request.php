@@ -21,12 +21,12 @@ class Request
     /**
      * @var int
      */
-    protected $keepConn;
+    protected $keepConn = FastCGI::KEEP_CONN;
 
     /**
      * @var int
      */
-    protected $requestId;
+    protected $requestId = FastCGI::DEFAULT_REQUEST_ID;
 
     /**
      * Request constructor.
@@ -36,7 +36,7 @@ class Request
     public function __construct(StdinInterface $stdin, int $requestId = null)
     {
         $this->stdin = $stdin;
-        $this->requestId = $requestId ?? Constant::DEFAULT_REQUEST_ID;
+        $this->requestId = $requestId ?? FastCGI::DEFAULT_REQUEST_ID;
     }
 
     /**
@@ -45,6 +45,14 @@ class Request
     public function getStdin() : StdinInterface
     {
         return $this->stdin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequestId(): int
+    {
+        return $this->requestId;
     }
 
     /**
@@ -72,29 +80,31 @@ class Request
     public function __toString(): string
     {
         //step1 begin
-        $begin = new BeginRequestRecord(Constant::RESPONDER, $this->getKeepConn(), '', $this->requestId);
+        $begin = new BeginRequestRecord(FastCGI::RESPONDER, $this->getKeepConn(), '', $this->getRequestId());
 
         //step2 params
-        $params = new ParamsRecord($this->getStdin()->getParams(), $this->requestId);
-        $paramsEof = new ParamsRecord([], $this->requestId);
+        $params = new ParamsRecord($this->getStdin()->getParams(), $this->getRequestId());
+        $paramsEof = new ParamsRecord([], $this->getRequestId());
         $message = $begin . $params . $paramsEof;
 
         //step3 stdin
         if (!empty($body = $this->getStdin()->getContent())) {
             $stdinList = [];
+            $bodyLength = strlen($body);
+            $stdinLength = 0;
 
             do {
-                $stdinList[] = $stdin = new StdinRecord($body, $this->requestId);
-                $stdinLength = $stdin->getContentLength();
+                $stdinList[] = $stdin = new StdinRecord($body, $this->getRequestId());
+                $stdinLength += $stdin->getContentLength();
 
-                if ($stdinLength === strlen($body)) {
+                if ($stdinLength === $bodyLength) {
                     break;
                 }
 
                 $body = substr($body, $stdinLength);
             } while (true);
 
-            $stdinList[] = new StdinRecord('', $this->requestId);
+            $stdinList[] = new StdinRecord('', $this->getRequestId());
             $stdin = implode($stdinList);
             $message .= $stdin;
         }

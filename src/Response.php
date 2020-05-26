@@ -39,22 +39,17 @@ class Response
             throw new InvalidArgumentException('FastCGI bad records');
         }
 
-        $body = '';
-        $error = '';
-
         foreach ($records as $record) {
             if ($record instanceof StdoutRecord) {
                 if ($record->getContentLength() > 0) {
-                    $body .= $record->getContentData();
+                    $this->body .= $record->getContentData();
                 }
             } elseif ($record instanceof StderrRecord) {
                 if ($record->getContentLength() > 0) {
-                    $error .= $record->getContentData();
+                    $this->error .= $record->getContentData();
                 }
             }
         }
-
-        $this->setBody($body)->setError($error);
     }
 
     /**
@@ -85,34 +80,5 @@ class Response
     public function getRequestId(): int
     {
         return $this->requestId;
-    }
-
-    /**
-     * @param $body
-     * @return $this
-     */
-    public function setBody($body): self
-    {
-        $this->body = $body;
-
-        return $this;
-    }
-
-    /**
-     * @param string $error
-     * @return $this
-     */
-    public function setError(string $error): self
-    {
-        $this->error = $error;
-
-        return $this;
-    }
-
-    public function setRequestId(int $requestId)
-    {
-        $this->requestId = $requestId;
-
-        return $this;
     }
 }

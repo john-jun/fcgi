@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\Constant;
+use Air\FCgi\FastCGI;
 
 /**
  * Class GetValuesRecord
@@ -20,6 +20,6 @@ class GetValuesRecord extends ParamsRecord
     {
         parent::__construct(array_fill_keys($keys, ''), $requestId);
 
-        $this->type = Constant::GET_VALUES;
+        $this->type = FastCGI::GET_VALUES;
     }
 }

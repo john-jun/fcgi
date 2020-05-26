@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\Constant;
+use Air\FCgi\FastCGI;
 use Air\FCgi\Record;
 
 /**
@@ -30,11 +30,11 @@ class UnknownTypeRecord extends Record
      */
     public function __construct(int $type = 0, string $reserved = '', int $requestId = null)
     {
-        $this->type = Constant::UNKNOWN_TYPE;
+        $this->type = FastCGI::UNKNOWN_TYPE;
         $this->type1 = $type;
         $this->reserved1 = $reserved;
 
-        $this->setRequestId($requestId ?? Constant::DEFAULT_REQUEST_ID);
+        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($this->packPayload());
     }
 

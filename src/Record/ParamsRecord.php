@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\Constant;
+use Air\FCgi\FastCGI;
 use Air\FCgi\Record;
 
 /**
@@ -24,10 +24,10 @@ class ParamsRecord extends Record
      */
     public function __construct(array $values = [], int $requestId = null)
     {
-        $this->type = Constant::PARAMS;
+        $this->type = FastCGI::PARAMS;
         $this->values = $values;
 
-        $this->setRequestId($requestId ?? Constant::DEFAULT_REQUEST_ID);
+        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($this->packPayload());
     }
 

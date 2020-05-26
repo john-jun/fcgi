@@ -7,7 +7,7 @@ namespace Air\FCgi;
  * Class FastCGI
  * @package Air\FCgi
  */
-class Constant
+class FastCGI
 {
     //header length
     public const HEADER_LEN = 8;
