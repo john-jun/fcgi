@@ -6,7 +6,7 @@ Install
 -------
 To install with composer
 ```sh
-composer require john-jun/FastCGI
+composer require john-jun/fcgi
 ```
 
 Test
