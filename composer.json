@@ -1,6 +1,6 @@
 {
-    "name": "john-jun/fcgi",
-	"description": "A simple FastCGI protocol",
+    "name": "john-jun/FastCGI",
+    "description": "A simple FastCGI protocol",
     "keywords": ["Air", "FastCgi", "cgi"],
     "license": "MIT",
     "authors": [
