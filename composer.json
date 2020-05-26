@@ -1,7 +1,7 @@
 {
-    "name": "air/fastcgi",
-	"description": "Simple FastCgi",
-    "keywords": ["FastCgi", "cgi"],
+    "name": "john-jun/fcgi",
+	"description": "A simple FastCGI protocol",
+    "keywords": ["Air", "FastCgi", "cgi"],
     "license": "MIT",
     "authors": [
         {
@@ -11,7 +11,11 @@
     ],
     "require": {
         "php": "^7.1",
-        "ext-json": "*"
+        "ext-json": "*",
+        "john-jun/socket-client": "^1.0"
+    },
+    "scripts": {
+        "test": "phpunit --colors=always tests"
     },
     "autoload": {
         "psr-4": {
@@ -25,5 +29,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }

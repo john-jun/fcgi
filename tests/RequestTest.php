@@ -10,6 +10,8 @@ use Air\FCgi\Http\Stdin\PutStdin;
 use Air\FCgi\Record\EndRequestRecord;
 use Air\FCgi\Request;
 use Air\FCgi\Response;
+use Air\SocketClient\NetAddress\TcpNetAddress;
+use Air\SocketClient\Socket;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -21,7 +23,7 @@ class RequestTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->socket = fsockopen('192.168.30.77', '9000');
+        $this->socket = new Socket(new TcpNetAddress('192.168.30.77', 9000));
     }
 
     protected function tearDown(): void
@@ -29,41 +31,25 @@ class RequestTest extends TestCase
         $this->socket = null;
     }
 
-    /**
-     * @test
-     */
-    public function message()
+    public function testMessage()
     {
-        $stdin = new PostStdin(new MultipartContent(['composer' => './composer.json'], ['a' => 'b']));
-        $stdin
-            ->setRequestUri('poster/share/5ec2086f6da5862738153ffb')
+        $stdin = new GetStdin(new UrlEncodedContent(['a' => 'b']));
+        $stdin->setRequestUri('poster/share/5ec2086f6da5862738153ffb')
             ->setScriptFilename('/mof/restful-social/public/index.php');
 
         $request = new Request($stdin);
         $request->setKeepConn(true);
 
-        //while (true) {
-            fwrite($this->socket, (string)$request);
+        $this->socket->connect();
 
-            do {
-                $recvData = fread($this->socket, 1024);
-                if (!$recvData) {
-                    break;
-                }
+        echo PHP_EOL . $this->socket->getConnectUseTime() . PHP_EOL;
 
-                if (!FrameParser::hasFrame($recvData)) {
-                    break;
-                }
+        $i = 0;
+        while ($i < 1) {
+            echo $this->socket->send((string)$request) . PHP_EOL;
+            var_dump($this->socket->recv(65535));
 
-                do {
-                    $records[] = $record = FrameParser::parseFrame($recvData);
-                } while (strlen($recvData) !== 0);
-
-                if ($record instanceof EndRequestRecord) {
-                    var_dump((new Response($records))->getBody());
-                    break;
-                }
-            } while (true);
-        //}
+            $i++;
+        }
     }
 }
