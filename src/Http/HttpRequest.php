@@ -15,25 +15,33 @@ class HttpRequest extends Request
      * @var string[]
      */
     private $params = [
+        'REQUEST_URI' => '',
         'REQUEST_SCHEME' => 'http',
         'REQUEST_METHOD' => 'GET',
-        'DOCUMENT_ROOT' => '',
-        'SCRIPT_FILENAME' => '',
-        'SCRIPT_NAME' => '',
-        'DOCUMENT_URI' => '/',
-        'REQUEST_URI' => '/',
+
         'QUERY_STRING' => '',
-        'CONTENT_TYPE' => 'text/plain',
-        'CONTENT_LENGTH' => '0',
-        'GATEWAY_INTERFACE' => 'CGI/1.1',
+
+        'DOCUMENT_URI' => '',
+        'DOCUMENT_ROOT' => '',
+
+        'SCRIPT_NAME' => '',
+        'SCRIPT_FILENAME' => '',
+
+        'CONTENT_TYPE' => '',
+        'CONTENT_LENGTH' => '',
+        'GATEWAY_INTERFACE' => 'FastCGI/1.1',
+
         'SERVER_PROTOCOL' => 'HTTP/1.1',
-        'SERVER_SOFTWARE' => '',
-        'REMOTE_ADDR' => 'unknown',
-        'REMOTE_PORT' => '0',
+        'SERVER_SOFTWARE' => 'PHP/' . PHP_VERSION,
+
         'SERVER_ADDR' => 'unknown',
         'SERVER_PORT' => '0',
-        'SERVER_NAME' => '',
-        'REDIRECT_STATUS' => '200',
+        'SERVER_NAME' => 'PHPClient',
+
+        'REMOTE_ADDR' => 'unknown',
+        'REMOTE_PORT' => '0',
+
+        'REDIRECT_STATUS' => '200'
     ];
 
     /**

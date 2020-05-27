@@ -52,7 +52,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return string
      */
-    public function getRequestMethod() : string
+    public function getMethod() : string
     {
         return $this->requestMethod ?? static::METHOD;
     }
@@ -61,7 +61,7 @@ class AbstractStdin implements StdinInterface
      * @param string $method
      * @return $this
      */
-    public function withRequestMethod(string $method) : self
+    public function withMethod(string $method) : self
     {
         $this->requestMethod = $method;
 
@@ -109,7 +109,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return string
      */
-    public function getContentType() : string
+    public function getContentType(): string
     {
         return $this->contentType;
     }
@@ -118,7 +118,7 @@ class AbstractStdin implements StdinInterface
      * @param string $contentType
      * @return $this
      */
-    public function withContentType(string $contentType) : self
+    public function withContentType(string $contentType): self
     {
         $this->contentType = $contentType;
 
@@ -137,7 +137,7 @@ class AbstractStdin implements StdinInterface
      * @param $content
      * @return $this
      */
-    public function withContent($content) : self
+    public function withContent($content): self
     {
         if ($content instanceof ContentInterface) {
             if ($content instanceof UrlEncodedContent) {
@@ -160,7 +160,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return int
      */
-    public function getContentLength() : int
+    public function getContentLength(): int
     {
         return $this->contentLength;
     }
@@ -168,7 +168,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return string
      */
-    public function getRequestUri() : string
+    public function getRequestUri(): string
     {
         return $this->requestUri;
     }
@@ -177,7 +177,7 @@ class AbstractStdin implements StdinInterface
      * @param string $requestUri
      * @return $this
      */
-    public function withRequestUri(string $requestUri) : self
+    public function withRequestUri(string $requestUri): self
     {
         $this->requestUri = $requestUri;
 
@@ -187,7 +187,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return array
      */
-    public function getCustomVars() : array
+    public function getCustomVars(): array
     {
         return $this->customVars;
     }
@@ -208,7 +208,7 @@ class AbstractStdin implements StdinInterface
      * @param array $vars
      * @return $this
      */
-    public function withCustomVars(array $vars) : self
+    public function withCustomVars(array $vars): self
     {
         $this->customVars = array_merge($this->customVars, $vars);
 
@@ -218,7 +218,7 @@ class AbstractStdin implements StdinInterface
     /**
      * @return string
      */
-    public function getScriptFilename() : string
+    public function getScriptFilename(): string
     {
         return $this->scriptFilename;
     }
@@ -227,7 +227,7 @@ class AbstractStdin implements StdinInterface
      * @param string $filename
      * @return $this
      */
-    public function withScriptFilename(string $filename) : self
+    public function withScriptFilename(string $filename): self
     {
         $this->scriptFilename = $filename;
 
@@ -242,7 +242,7 @@ class AbstractStdin implements StdinInterface
         return array_merge(
             [
                 'REQUEST_URI' => $this->getRequestUri(),
-                'REQUEST_METHOD' => $this->getRequestMethod(),
+                'REQUEST_METHOD' => $this->getMethod(),
                 'SCRIPT_FILENAME' => $this->getScriptFilename(),
                 'SERVER_SOFTWARE' => $this->getServerSoftware(),
                 'QUERY_STRING' => $this->getQueryString(),
