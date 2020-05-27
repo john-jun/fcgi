@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Air\FCgi;
 
+use Air\FCgi\Exception\FastCGIException;
 use Air\FCgi\Record\AbortRequestRecord;
+use Air\FCgi\Record\AbstractRecord;
 use Air\FCgi\Record\BeginRequestRecord;
 use Air\FCgi\Record\DataRecord;
 use Air\FCgi\Record\EndRequestRecord;
@@ -14,8 +16,6 @@ use Air\FCgi\Record\StderrRecord;
 use Air\FCgi\Record\StdinRecord;
 use Air\FCgi\Record\StdoutRecord;
 use Air\FCgi\Record\UnknownTypeRecord;
-use DomainException;
-use RuntimeException;
 
 /**
  * Class FrameParser
@@ -27,36 +27,37 @@ class Parser
      * @var string[]
      */
     protected static $classMapping = [
-        FastCGI::BEGIN_REQUEST => BeginRequestRecord::class,
-        FastCGI::ABORT_REQUEST => AbortRequestRecord::class,
-        FastCGI::END_REQUEST => EndRequestRecord::class,
-        FastCGI::PARAMS => ParamsRecord::class,
-        FastCGI::STDIN => StdinRecord::class,
-        FastCGI::STDOUT => StdoutRecord::class,
-        FastCGI::STDERR => StderrRecord::class,
-        FastCGI::DATA => DataRecord::class,
-        FastCGI::GET_VALUES => GetValuesRecord::class,
-        FastCGI::GET_VALUES_RESULT => GetValuesResultRecord::class,
-        FastCGI::UNKNOWN_TYPE => UnknownTypeRecord::class
+        FastCGIConstant::BEGIN_REQUEST => BeginRequestRecord::class,
+        FastCGIConstant::ABORT_REQUEST => AbortRequestRecord::class,
+        FastCGIConstant::END_REQUEST => EndRequestRecord::class,
+        FastCGIConstant::PARAMS => ParamsRecord::class,
+        FastCGIConstant::STDIN => StdinRecord::class,
+        FastCGIConstant::STDOUT => StdoutRecord::class,
+        FastCGIConstant::STDERR => StderrRecord::class,
+        FastCGIConstant::DATA => DataRecord::class,
+        FastCGIConstant::GET_VALUES => GetValuesRecord::class,
+        FastCGIConstant::GET_VALUES_RESULT => GetValuesResultRecord::class,
+        FastCGIConstant::UNKNOWN_TYPE => UnknownTypeRecord::class
     ];
 
     /**
-     * @param array $header
      * @param string $buffer
-     * @return Record
+     * @return AbstractRecord
+     * @throws FastCGIException
      */
-    public static function parseFrame(array $header, string &$buffer): Record
+    public static function frame(string &$buffer): AbstractRecord
     {
+        $header = unpack(FastCGIConstant::HEADER_FORMAT, $buffer);
         $recordType = $header['type'];
         if (!isset(self::$classMapping[$recordType])) {
-            throw new DomainException("Invalid FastCGI record type {$recordType} received");
+            throw new FastCGIException("Invalid FastCGI record type {$recordType} received");
         }
 
-        /** @var Record $className */
+        /** @var AbstractRecord $className */
         $className = self::$classMapping[$recordType];
         $record = $className::unpack($buffer, $header);
 
-        $offset = FastCGI::HEADER_LEN + $record->getContentLength() + $record->getPaddingLength();
+        $offset = FastCGIConstant::HEADER_LEN + $record->getContentLength() + $record->getPaddingLength();
         $buffer = substr($buffer, $offset);
 
         return $record;

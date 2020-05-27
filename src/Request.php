@@ -21,22 +21,24 @@ class Request
     /**
      * @var int
      */
-    protected $keepConn = FastCGI::KEEP_CONN;
+    protected $keepConn = FastCGIConstant::KEEP_CONN;
 
     /**
      * @var int
      */
-    protected $requestId = FastCGI::DEFAULT_REQUEST_ID;
+    protected $requestId = FastCGIConstant::DEFAULT_REQUEST_ID;
 
     /**
      * Request constructor.
      * @param StdinInterface $stdin
      * @param int|null $requestId
+     * @param bool $keepConn
      */
-    public function __construct(StdinInterface $stdin, int $requestId = null)
+    public function __construct(StdinInterface $stdin, int $requestId = null, bool $keepConn = false)
     {
         $this->stdin = $stdin;
-        $this->requestId = $requestId ?? FastCGI::DEFAULT_REQUEST_ID;
+        $this->keepConn = intval($keepConn);
+        $this->requestId = $requestId ?? FastCGIConstant::DEFAULT_REQUEST_ID;
     }
 
     /**
@@ -64,27 +66,21 @@ class Request
     }
 
     /**
-     * @param bool $keepConn
-     * @return $this
-     */
-    public function setKeepConn(bool $keepConn) : self
-    {
-        $this->keepConn = intval($keepConn);
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function __toString(): string
     {
         //step1 begin
-        $begin = new BeginRequestRecord(FastCGI::RESPONDER, $this->getKeepConn(), '', $this->getRequestId());
+        $begin = new BeginRequestRecord(FastCGIConstant::RESPONDER, $this->getKeepConn(), '');
+        $begin->setRequestId($this->getRequestId());
 
         //step2 params
-        $params = new ParamsRecord($this->getStdin()->getParams(), $this->getRequestId());
-        $paramsEof = new ParamsRecord([], $this->getRequestId());
+        $params = new ParamsRecord($this->getStdin()->getParams());
+        $params->setRequestId($this->getRequestId());
+
+        $paramsEof = new ParamsRecord([]);
+        $paramsEof->setRequestId($this->getRequestId());
+
         $message = $begin . $params . $paramsEof;
 
         //step3 stdin
@@ -94,9 +90,10 @@ class Request
             $stdinLength = 0;
 
             do {
-                $stdinList[] = $stdin = new StdinRecord($body, $this->getRequestId());
-                $stdinLength += $stdin->getContentLength();
+                $stdinList[] = $stdin = new StdinRecord($body);
+                $stdin->setRequestId($this->getRequestId());
 
+                $stdinLength += $stdin->getContentLength();
                 if ($stdinLength === $bodyLength) {
                     break;
                 }
@@ -104,7 +101,9 @@ class Request
                 $body = substr($body, $stdinLength);
             } while (true);
 
-            $stdinList[] = new StdinRecord('', $this->getRequestId());
+            $stdinList[] = $stdin = new StdinRecord('');
+            $stdin->setRequestId($this->getRequestId());
+
             $stdin = implode($stdinList);
             $message .= $stdin;
         }

@@ -44,9 +44,9 @@ class AbstractStdin implements StdinInterface
      * AbstractStdin constructor.
      * @param ContentInterface $content
      */
-    public function __construct(ContentInterface $content)
+    public function __construct(ContentInterface $content = null)
     {
-        $this->setContent($content);
+        $this->withContent($content);
     }
 
     /**
@@ -61,7 +61,7 @@ class AbstractStdin implements StdinInterface
      * @param string $method
      * @return $this
      */
-    public function setRequestMethod(string $method) : self
+    public function withRequestMethod(string $method) : self
     {
         $this->requestMethod = $method;
 
@@ -80,7 +80,7 @@ class AbstractStdin implements StdinInterface
      * @param string $querystring
      * @return $this
      */
-    public function setQueryString(string $querystring) : self
+    public function withQueryString(string $querystring) : self
     {
         $this->queryString = $querystring;
 
@@ -99,7 +99,7 @@ class AbstractStdin implements StdinInterface
      * @param string $serverSoftware
      * @return $this
      */
-    public function setServerSoftware(string $serverSoftware) : self
+    public function withServerSoftware(string $serverSoftware) : self
     {
         $this->serverSoftware = $serverSoftware;
 
@@ -118,33 +118,9 @@ class AbstractStdin implements StdinInterface
      * @param string $contentType
      * @return $this
      */
-    public function setContentType(string $contentType) : self
+    public function withContentType(string $contentType) : self
     {
         $this->contentType = $contentType;
-
-        return $this;
-    }
-
-    /**
-     * @param $content
-     * @return $this
-     */
-    public function setContent($content) : self
-    {
-        if ($content instanceof ContentInterface) {
-            if ($content instanceof UrlEncodedContent) {
-                if (in_array(static::METHOD, ['GET', 'HEAD', 'DELETE', 'OPTIONS'])) {
-                    return $this->setQueryString($content->getContent());
-                }
-            }
-
-            $this->content = $content->getContent();
-            $this->contentLength = strlen($this->content);
-            $this->setContentType($content->getContentType());
-        } else {
-            $this->content = $content;
-            $this->contentLength = strlen($content);
-        }
 
         return $this;
     }
@@ -155,6 +131,30 @@ class AbstractStdin implements StdinInterface
     public function getContent() : string
     {
         return $this->content;
+    }
+
+    /**
+     * @param $content
+     * @return $this
+     */
+    public function withContent($content) : self
+    {
+        if ($content instanceof ContentInterface) {
+            if ($content instanceof UrlEncodedContent) {
+                if (in_array(static::METHOD, ['GET', 'HEAD', 'DELETE', 'OPTIONS'])) {
+                    return $this->withQueryString($content->getContent());
+                }
+            }
+
+            $this->content = $content->getContent();
+            $this->contentLength = strlen($this->content);
+            $this->withContentType($content->getContentType());
+        } else {
+            $this->content = $content;
+            $this->contentLength = strlen($content);
+        }
+
+        return $this;
     }
 
     /**
@@ -177,20 +177,9 @@ class AbstractStdin implements StdinInterface
      * @param string $requestUri
      * @return $this
      */
-    public function setRequestUri(string $requestUri) : self
+    public function withRequestUri(string $requestUri) : self
     {
         $this->requestUri = $requestUri;
-
-        return $this;
-    }
-
-    /**
-     * @param array $vars
-     * @return $this
-     */
-    public function setCustomVars(array $vars) : self
-    {
-        $this->customVars = array_merge($this->customVars, $vars);
 
         return $this;
     }
@@ -204,12 +193,24 @@ class AbstractStdin implements StdinInterface
     }
 
     /**
-     * @param string $filename
+     * @param string $key
+     * @param string $value
      * @return $this
      */
-    public function setScriptFilename(string $filename) : self
+    public function withCustomVar(string $key, string $value): self
     {
-        $this->scriptFilename = $filename;
+        $this->customVars[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param array $vars
+     * @return $this
+     */
+    public function withCustomVars(array $vars) : self
+    {
+        $this->customVars = array_merge($this->customVars, $vars);
 
         return $this;
     }
@@ -220,6 +221,17 @@ class AbstractStdin implements StdinInterface
     public function getScriptFilename() : string
     {
         return $this->scriptFilename;
+    }
+
+    /**
+     * @param string $filename
+     * @return $this
+     */
+    public function withScriptFilename(string $filename) : self
+    {
+        $this->scriptFilename = $filename;
+
+        return $this;
     }
 
     /**
@@ -235,13 +247,11 @@ class AbstractStdin implements StdinInterface
                 'SERVER_SOFTWARE' => $this->getServerSoftware(),
                 'QUERY_STRING' => $this->getQueryString(),
                 'CONTENT_TYPE' => $this->getContentType(),
-                'CONTENT_LENGTH' => $this->getContentLength()
-            ],
-            $this->getCustomVars(),
-            [
+                'CONTENT_LENGTH' => $this->getContentLength(),
                 'SERVER_PROTOCOL' => 'HTTP/1.1',
                 'GATEWAY_INTERFACE' => 'FastCGI/1.1'
-            ]
+            ],
+            $this->getCustomVars()
         );
     }
 }

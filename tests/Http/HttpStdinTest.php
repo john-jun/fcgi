@@ -1,5 +1,5 @@
 <?php
-namespace Air\FCgi\Test;
+namespace Air\FCgi\Test\Http;
 
 use Air\FCgi\Http\Content\JsonContent;
 use Air\FCgi\Http\Content\MultipartContent;

@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\FastCGI;
-use Air\FCgi\Record;
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class UnknownTypeRecord
  * @package Air\FCgi\Record
  */
-class UnknownTypeRecord extends Record
+class UnknownTypeRecord extends AbstractRecord
 {
     /**
      * @var int
@@ -26,15 +25,13 @@ class UnknownTypeRecord extends Record
      * UnknownTypeRecord constructor.
      * @param int $type
      * @param string $reserved
-     * @param int|null $requestId
      */
-    public function __construct(int $type = 0, string $reserved = '', int $requestId = null)
+    public function __construct(int $type = 0, string $reserved = '')
     {
-        $this->type = FastCGI::UNKNOWN_TYPE;
+        $this->type = FastCGIConstant::UNKNOWN_TYPE;
         $this->type1 = $type;
         $this->reserved1 = $reserved;
 
-        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($this->packPayload());
     }
 
@@ -60,10 +57,6 @@ class UnknownTypeRecord extends Record
      */
     protected function packPayload(): string
     {
-        return pack(
-            'Ca7',
-            $this->type1,
-            $this->reserved1
-        );
+        return pack('Ca7', $this->type1, $this->reserved1);
     }
 }

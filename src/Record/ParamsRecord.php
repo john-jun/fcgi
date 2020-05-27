@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\FastCGI;
-use Air\FCgi\Record;
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class ParamsRecord
  * @package Air\FCgi\Record
  */
-class ParamsRecord extends Record
+class ParamsRecord extends AbstractRecord
 {
     /**
      * @var array
@@ -20,14 +19,12 @@ class ParamsRecord extends Record
     /**
      * ParamsRecord constructor.
      * @param array $values
-     * @param int|null $requestId
      */
-    public function __construct(array $values = [], int $requestId = null)
+    public function __construct(array $values = [])
     {
-        $this->type = FastCGI::PARAMS;
+        $this->type = FastCGIConstant::PARAMS;
         $this->values = $values;
 
-        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($this->packPayload());
     }
 

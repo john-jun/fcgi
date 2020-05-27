@@ -1,28 +1,30 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi;
+namespace Air\FCgi\Record;
+
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class Record
  * @package Air\FCgi
  */
-class Record
+abstract class AbstractRecord
 {
     /**
      * @var int
      */
-    protected $type = FastCGI::UNKNOWN_TYPE;
+    protected $type = FastCGIConstant::UNKNOWN_TYPE;
 
     /**
      * @var int
      */
-    protected $version = FastCGI::VERSION_1;
+    protected $version = FastCGIConstant::VERSION_1;
 
     /**
      * @var int
      */
-    protected $requestId = FastCGI::DEFAULT_REQUEST_ID;
+    protected $requestId = FastCGIConstant::DEFAULT_REQUEST_ID;
 
     /**
      * @var int
@@ -78,6 +80,7 @@ class Record
     final public static function unpack(string $data, array $header = []): self
     {
         $self = new static();
+
         $self->type = $header['type'];
         $self->version = $header['version'];
         $self->reserved = $header['reserved'];
@@ -85,7 +88,7 @@ class Record
         $self->contentLength = $header['contentLength'];
         $self->paddingLength = $header['paddingLength'];
 
-        $payload = substr($data, FastCGI::HEADER_LEN);
+        $payload = substr($data, FastCGIConstant::HEADER_LEN);
         self::unpackPayload($self, $payload);
 
         if (get_called_class() !== __CLASS__ && $self->contentLength > 0) {
@@ -103,9 +106,9 @@ class Record
     {
         $this->contentLength = strlen($data);
 
-        if ($this->contentLength > FastCGI::MAX_CONTENT_LENGTH) {
-            $this->contentLength = FastCGI::MAX_CONTENT_LENGTH;
-            $this->contentData = substr($data, 0, FastCGI::MAX_CONTENT_LENGTH);
+        if ($this->contentLength > FastCGIConstant::MAX_CONTENT_LENGTH) {
+            $this->contentLength = FastCGIConstant::MAX_CONTENT_LENGTH;
+            $this->contentData = substr($data, 0, FastCGIConstant::MAX_CONTENT_LENGTH);
         } else {
             $this->contentData = $data;
         }
@@ -181,10 +184,7 @@ class Record
      */
     protected static function unpackPayload($self, string $data): void
     {
-        [
-            $self->contentData,
-            $self->paddingData
-        ] = array_values(
+        [$self->contentData, $self->paddingData] = array_values(
             unpack("a{$self->contentLength}contentData/a{$self->paddingLength}paddingData", $data)
         );
     }

@@ -3,25 +3,22 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\FastCGI;
-use Air\FCgi\Record;
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class FastCGIRecordParams
  * @package Air\FCgi
  */
-class StdoutRecord extends Record
+class StdoutRecord extends AbstractRecord
 {
     /**
      * StdoutRecord constructor.
      * @param string $contentData
-     * @param int|null $requestId
      */
-    public function __construct(string $contentData = '', int $requestId = null)
+    public function __construct(string $contentData = '')
     {
-        $this->type = FastCGI::STDOUT;
+        $this->type = FastCGIConstant::STDOUT;
 
-        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($contentData);
     }
 }

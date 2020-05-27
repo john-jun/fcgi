@@ -3,23 +3,22 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\FastCGI;
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class GetValuesResultRecord
  * @package Air\FCgi\Record
  */
-class GetValuesResultRecord extends ParamsRecord
+class GetValuesResultRecord extends ParamsAbstractRecord
 {
     /**
      * GetValuesResultRecord constructor.
      * @param array $values
-     * @param int|null $requestId
      */
-    public function __construct(array $values = [], int $requestId = null)
+    public function __construct(array $values = [])
     {
-        parent::__construct($values, $requestId);
+        parent::__construct($values);
 
-        $this->type = FastCGI::GET_VALUES_RESULT;
+        $this->type = FastCGIConstant::GET_VALUES_RESULT;
     }
 }

@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Record;
 
-use Air\FCgi\FastCGI;
-use Air\FCgi\Record;
+use Air\FCgi\FastCGIConstant;
 
 /**
  * Class EndRequestRecord
  * @package Air\FCgi\Record
  */
-class EndRequestRecord extends Record
+class EndRequestRecord extends AbstractRecord
 {
     /**
      * @var int
@@ -20,7 +19,7 @@ class EndRequestRecord extends Record
     /**
      * @var int
      */
-    protected $protocolStatus = FastCGI::REQUEST_COMPLETE;
+    protected $protocolStatus = FastCGIConstant::REQUEST_COMPLETE;
 
     /**
      * @var string
@@ -32,15 +31,13 @@ class EndRequestRecord extends Record
      * @param int $protocolStatus
      * @param int $appStatus
      * @param string $reserved
-     * @param int|null $requestId
      */
-    public function __construct(int $protocolStatus = FastCGI::REQUEST_COMPLETE, int $appStatus = 0, string $reserved = '', int $requestId = null) {
-        $this->type = FastCGI::END_REQUEST;
+    public function __construct(int $protocolStatus = FastCGIConstant::REQUEST_COMPLETE, int $appStatus = 0, string $reserved = '') {
+        $this->type = FastCGIConstant::END_REQUEST;
         $this->appStatus = $appStatus;
         $this->reserved1 = $reserved;
         $this->protocolStatus = $protocolStatus;
 
-        $this->setRequestId($requestId ?? FastCGI::DEFAULT_REQUEST_ID);
         $this->setContentData($this->packPayload());
     }
 
@@ -66,11 +63,7 @@ class EndRequestRecord extends Record
      */
     protected static function unpackPayload($self, string $data): void
     {
-        [
-            $self->appStatus,
-            $self->protocolStatus,
-            $self->reserved1
-        ] = array_values(unpack('NappStatus/CprotocolStatus/a3reserved', $data));
+        [$self->appStatus, $self->protocolStatus, $self->reserved1] = array_values(unpack('NappStatus/CprotocolStatus/a3reserved', $data));
     }
 
     /**
@@ -78,11 +71,6 @@ class EndRequestRecord extends Record
      */
     protected function packPayload(): string
     {
-        return pack(
-            'NCa3',
-            $this->appStatus,
-            $this->protocolStatus,
-            $this->reserved1
-        );
+        return pack('NCa3', $this->appStatus, $this->protocolStatus, $this->reserved1);
     }
 }
