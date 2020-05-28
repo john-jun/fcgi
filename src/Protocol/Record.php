@@ -1,30 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
-
-use Air\FCgi\FastCGIConstant;
+namespace Air\FCgi\Protocol;
 
 /**
  * Class Record
  * @package Air\FCgi
  */
-abstract class AbstractRecord
+class Record
 {
     /**
      * @var int
      */
-    protected $type = FastCGIConstant::UNKNOWN_TYPE;
+    protected $type = Constant::UNKNOWN_TYPE;
 
     /**
      * @var int
      */
-    protected $version = FastCGIConstant::VERSION_1;
+    protected $version = Constant::VERSION_1;
 
     /**
      * @var int
      */
-    protected $requestId = FastCGIConstant::DEFAULT_REQUEST_ID;
+    protected $requestId = Constant::DEFAULT_REQUEST_ID;
 
     /**
      * @var int
@@ -81,14 +79,25 @@ abstract class AbstractRecord
     {
         $self = new static();
 
-        $self->type = $header['type'];
-        $self->version = $header['version'];
-        $self->reserved = $header['reserved'];
-        $self->requestId = $header['requestId'];
-        $self->contentLength = $header['contentLength'];
-        $self->paddingLength = $header['paddingLength'];
+        if ($header) {
+            $self->type = $header['type'];
+            $self->version = $header['version'];
+            $self->reserved = $header['reserved'];
+            $self->requestId = $header['requestId'];
+            $self->contentLength = $header['contentLength'];
+            $self->paddingLength = $header['paddingLength'];
+        } else {
+            [
+                $self->version,
+                $self->type,
+                $self->requestId,
+                $self->contentLength,
+                $self->paddingLength,
+                $self->reserved
+            ] = array_values(unpack(Constant::HEADER_FORMAT, $data));
+        }
 
-        $payload = substr($data, FastCGIConstant::HEADER_LEN);
+        $payload = substr($data, Constant::HEADER_LEN);
         self::unpackPayload($self, $payload);
 
         if (get_called_class() !== __CLASS__ && $self->contentLength > 0) {
@@ -106,9 +115,9 @@ abstract class AbstractRecord
     {
         $this->contentLength = strlen($data);
 
-        if ($this->contentLength > FastCGIConstant::MAX_CONTENT_LENGTH) {
-            $this->contentLength = FastCGIConstant::MAX_CONTENT_LENGTH;
-            $this->contentData = substr($data, 0, FastCGIConstant::MAX_CONTENT_LENGTH);
+        if ($this->contentLength > Constant::MAX_CONTENT_LENGTH) {
+            $this->contentLength = Constant::MAX_CONTENT_LENGTH;
+            $this->contentData = substr($data, 0, Constant::MAX_CONTENT_LENGTH);
         } else {
             $this->contentData = $data;
         }

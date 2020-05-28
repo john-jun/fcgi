@@ -1,21 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class AbortRequestRecord
  * @package Air\FCgi\Record
  */
-class AbortRequestRecord extends AbstractRecord
+class AbortRequestRecord extends Record
 {
     /**
      * AbortRequestRecord constructor.
      */
     public function __construct()
     {
-        $this->type = FastCGIConstant::ABORT_REQUEST;
+        $this->type = Constant::ABORT_REQUEST;
     }
 }

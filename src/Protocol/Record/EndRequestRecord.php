@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class EndRequestRecord
  * @package Air\FCgi\Record
  */
-class EndRequestRecord extends AbstractRecord
+class EndRequestRecord extends Record
 {
     /**
      * @var int
@@ -19,7 +20,7 @@ class EndRequestRecord extends AbstractRecord
     /**
      * @var int
      */
-    protected $protocolStatus = FastCGIConstant::REQUEST_COMPLETE;
+    protected $protocolStatus = Constant::REQUEST_COMPLETE;
 
     /**
      * @var string
@@ -32,8 +33,8 @@ class EndRequestRecord extends AbstractRecord
      * @param int $appStatus
      * @param string $reserved
      */
-    public function __construct(int $protocolStatus = FastCGIConstant::REQUEST_COMPLETE, int $appStatus = 0, string $reserved = '') {
-        $this->type = FastCGIConstant::END_REQUEST;
+    public function __construct(int $protocolStatus = Constant::REQUEST_COMPLETE, int $appStatus = 0, string $reserved = '') {
+        $this->type = Constant::END_REQUEST;
         $this->appStatus = $appStatus;
         $this->reserved1 = $reserved;
         $this->protocolStatus = $protocolStatus;

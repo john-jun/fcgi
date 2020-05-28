@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Http\Content;
 
-use Air\FCgi\ContentInterface;
+use Air\FCgi\Http\ContentInterface;
 use InvalidArgumentException;
 
 /**

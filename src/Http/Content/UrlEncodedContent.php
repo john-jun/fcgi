@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Http\Content;
 
-use Air\FCgi\ContentInterface;
+use Air\FCgi\Http\ContentInterface;
 
 /**
  * Class UrlEncodedContent
@@ -19,7 +19,7 @@ class UrlEncodedContent implements ContentInterface
      */
     public function __construct(array $data)
     {
-        $this->data = $data;
+        $this->data = http_build_query($data);
     }
 
     /**
@@ -35,6 +35,6 @@ class UrlEncodedContent implements ContentInterface
      */
     public function getContent() : string
     {
-        return http_build_query($this->data);
+        return $this->data;
     }
 }

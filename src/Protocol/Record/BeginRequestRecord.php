@@ -1,20 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class BeginRequestRecord
  * @package Air\FCgi\Record
  */
-class BeginRequestRecord extends AbstractRecord
+class BeginRequestRecord extends Record
 {
     /**
      * @var int
      */
-    protected $role = FastCGIConstant::UNKNOWN_ROLE;
+    protected $role = Constant::UNKNOWN_ROLE;
 
     /**
      * @var int
@@ -32,9 +33,9 @@ class BeginRequestRecord extends AbstractRecord
      * @param int $flags
      * @param string $reserved
      */
-    public function __construct(int $role = FastCGIConstant::UNKNOWN_ROLE, int $flags = 0, string $reserved = '')
+    public function __construct(int $role = Constant::UNKNOWN_ROLE, int $flags = 0, string $reserved = '')
     {
-        $this->type = FastCGIConstant::BEGIN_REQUEST;
+        $this->type = Constant::BEGIN_REQUEST;
         $this->role = $role;
         $this->flags = $flags;
         $this->reserved1 = $reserved;

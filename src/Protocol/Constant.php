@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi;
+namespace Air\FCgi\Protocol;
 
 /**
  * Class FastCGI
  * @package Air\FCgi
  */
-class FastCGIConstant
+class Constant
 {
     //header length
     public const HEADER_LEN = 8;

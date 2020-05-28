@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Air\FCgi\Http;
 
 use Air\FCgi\Exception\FastCGIException;
-use Air\FCgi\Response;
+use Air\FCgi\Protocol\Response;
 use Air\Http\HttpStatus;
 
 /**

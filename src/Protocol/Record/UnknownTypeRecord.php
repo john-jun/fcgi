@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class UnknownTypeRecord
  * @package Air\FCgi\Record
  */
-class UnknownTypeRecord extends AbstractRecord
+class UnknownTypeRecord extends Record
 {
     /**
      * @var int
@@ -28,7 +29,7 @@ class UnknownTypeRecord extends AbstractRecord
      */
     public function __construct(int $type = 0, string $reserved = '')
     {
-        $this->type = FastCGIConstant::UNKNOWN_TYPE;
+        $this->type = Constant::UNKNOWN_TYPE;
         $this->type1 = $type;
         $this->reserved1 = $reserved;
 

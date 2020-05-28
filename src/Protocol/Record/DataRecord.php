@@ -1,23 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
- * Class StderrRecord
+ * Class DataRecord
  * @package Air\FCgi\Record
  */
-class StderrRecord extends AbstractRecord
+class DataRecord extends Record
 {
     /**
-     * StderrRecord constructor.
+     * DataRecord constructor.
      * @param string $contentData
      */
     public function __construct(string $contentData = '')
     {
-        $this->type = FastCGIConstant::STDERR;
+        $this->type = Constant::DATA;
 
         $this->setContentData($contentData);
     }

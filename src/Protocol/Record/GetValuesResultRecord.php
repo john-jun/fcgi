@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
 
 /**
  * Class GetValuesResultRecord
  * @package Air\FCgi\Record
  */
-class GetValuesResultRecord extends ParamsAbstractRecord
+class GetValuesResultRecord extends ParamsRecord
 {
     /**
      * GetValuesResultRecord constructor.
@@ -19,6 +19,6 @@ class GetValuesResultRecord extends ParamsAbstractRecord
     {
         parent::__construct($values);
 
-        $this->type = FastCGIConstant::GET_VALUES_RESULT;
+        $this->type = Constant::GET_VALUES_RESULT;
     }
 }

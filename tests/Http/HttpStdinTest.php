@@ -4,13 +4,13 @@ namespace Air\FCgi\Test\Http;
 use Air\FCgi\Http\Content\JsonContent;
 use Air\FCgi\Http\Content\MultipartContent;
 use Air\FCgi\Http\Content\UrlEncodedContent;
-use Air\FCgi\Http\Stdin\DeleteStdin;
-use Air\FCgi\Http\Stdin\GetStdin;
-use Air\FCgi\Http\Stdin\HeadStdin;
-use Air\FCgi\Http\Stdin\OptionsStdin;
-use Air\FCgi\Http\Stdin\PatchStdin;
-use Air\FCgi\Http\Stdin\PostStdin;
-use Air\FCgi\Http\Stdin\PutStdin;
+use Air\FCgi\Http\Message\DeleteMessage;
+use Air\FCgi\Http\Message\GetStdin;
+use Air\FCgi\Http\Message\HeadStdin;
+use Air\FCgi\Http\Message\OptionsStdin;
+use Air\FCgi\Http\Message\PatchStdin;
+use Air\FCgi\Http\Message\PostStdin;
+use Air\FCgi\Http\Message\PutStdin;
 use PHPUnit\Framework\TestCase;
 
 class HttpStdinTest extends TestCase
@@ -92,10 +92,10 @@ class HttpStdinTest extends TestCase
 
     public function testDelete()
     {
-        $stdin = new DeleteStdin($this->json);
+        $stdin = new DeleteMessage($this->json);
         $this->assertIsString($stdin->getContent());
 
-        $stdin = new DeleteStdin($this->urlEncoded);
+        $stdin = new DeleteMessage($this->urlEncoded);
         $this->assertIsString($stdin->getContent());
     }
 }

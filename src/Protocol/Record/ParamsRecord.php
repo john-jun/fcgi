@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class ParamsRecord
  * @package Air\FCgi\Record
  */
-class ParamsRecord extends AbstractRecord
+class ParamsRecord extends Record
 {
     /**
      * @var array
@@ -22,7 +23,7 @@ class ParamsRecord extends AbstractRecord
      */
     public function __construct(array $values = [])
     {
-        $this->type = FastCGIConstant::PARAMS;
+        $this->type = Constant::PARAMS;
         $this->values = $values;
 
         $this->setContentData($this->packPayload());

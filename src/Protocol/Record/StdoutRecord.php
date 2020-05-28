@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class FastCGIRecordParams
  * @package Air\FCgi
  */
-class StdoutRecord extends AbstractRecord
+class StdoutRecord extends Record
 {
     /**
      * StdoutRecord constructor.
@@ -17,7 +18,7 @@ class StdoutRecord extends AbstractRecord
      */
     public function __construct(string $contentData = '')
     {
-        $this->type = FastCGIConstant::STDOUT;
+        $this->type = Constant::STDOUT;
 
         $this->setContentData($contentData);
     }

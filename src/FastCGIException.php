@@ -6,6 +6,6 @@ namespace Air\FCgi;
  * Interface FCgiExceptionInterface
  * @package Air\FCgi
  */
-interface FastCGIExceptionInterface
+interface FastCGIException
 {
 }

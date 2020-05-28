@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi\Record;
+namespace Air\FCgi\Protocol\Record;
 
-use Air\FCgi\FastCGIConstant;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Record;
 
 /**
  * Class StdinRecord
  * @package Air\FCgi\Record
  */
-class StdinRecord extends AbstractRecord
+class StdinRecord extends Record
 {
     /**
      * StdinRecord constructor.
@@ -17,7 +18,7 @@ class StdinRecord extends AbstractRecord
      */
     public function __construct(string $contentData = '')
     {
-        $this->type = FastCGIConstant::STDIN;
+        $this->type = Constant::STDIN;
 
         $this->setContentData($contentData);
     }

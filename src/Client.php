@@ -4,6 +4,10 @@ namespace Air\FCgi;
 
 use Air\FCgi\Http\HttpRequest;
 use Air\FCgi\Http\HttpResponse;
+use Air\FCgi\Protocol\Constant;
+use Air\FCgi\Protocol\Parser;
+use Air\FCgi\Protocol\Request;
+use Air\FCgi\Protocol\Response;
 use Air\SocketClient\NetAddress\TcpNetAddress;
 use Air\SocketClient\NetAddress\UnixNetAddress;
 use Air\SocketClient\Socket;
@@ -53,13 +57,17 @@ class Client
             $buffer = '';
             do {
                 $header = '';
-                $length = FastCGIConstant::HEADER_LEN;
+                $length = Constant::HEADER_LEN;
 
                 //read 8 byte header
                 do {
-                    $header .= $this->socket->recv($length);
-                    $length -= strlen($header);
-                } while ($length > 0);
+                    $data = $this->socket->recv($length);
+
+                    if (is_string($data)) {
+                        $header .= $data;
+                        $length -= strlen($header);
+                    }
+                } while ($length);
 
                 $type = ord($header[1]);
                 $length = (ord($header[4]) << 8) + ord($header[5]) + ord($header[6]);
@@ -69,11 +77,13 @@ class Client
                 while ($length) {
                     $data = $this->socket->recv($length);
 
-                    $length -= strlen($data);
-                    $buffer .= $data;
+                    if (is_string($data)) {
+                        $length -= strlen($data);
+                        $buffer .= $data;
+                    }
                 }
 
-                if (FastCGIConstant::END_REQUEST === $type) {
+                if (Constant::END_REQUEST === $type) {
                     break;
                 }
             } while (true);
@@ -104,6 +114,7 @@ class Client
      * @param string $data
      * @param float|int $timeout
      * @return string
+     * @throws Exception
      */
     public static function call(string $url, string $path, $data = '', float $timeout = -1): string
     {
@@ -112,11 +123,19 @@ class Client
 
         $path = $pathInfo['path'] ?? '';
         $root = dirname($path);
-        $scriptName = '/' . basename($path);
-        $documentUri = $scriptName;
         $query = $pathInfo['query'] ?? '';
+        $documentUri = '/' . basename($path);
         $requestUri = $query ? "{$documentUri}?{$query}" : $documentUri;
+
         $request = new HttpRequest();
+        $request->withContent($data)
+            ->withRequestUri($requestUri)
+            ->withDocumentUri($documentUri)
+            ->withQueryString($query)
+            ->withDocumentRoot($root)
+            ->withScriptFilename($path);
+
+        $response = $client->execute($request, $timeout);
 
         return $response->getBody();
     }

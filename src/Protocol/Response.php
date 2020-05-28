@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Air\FCgi;
+namespace Air\FCgi\Protocol;
 
 use Air\FCgi\Exception\FastCGIException;
-use Air\FCgi\Record\EndRequestRecord;
-use Air\FCgi\Record\StderrRecord;
-use Air\FCgi\Record\StdoutRecord;
-use Air\FCgi\Record\UnknownTypeRecord;
+use Air\FCgi\Protocol\Record\EndRequestRecord;
+use Air\FCgi\Protocol\Record\StderrRecord;
+use Air\FCgi\Protocol\Record\StdoutRecord;
+use Air\FCgi\Protocol\Record\UnknownTypeRecord;
 
 /**
  * Class Response
@@ -69,17 +69,17 @@ class Response
         }
 
         switch ($lastRecord->getProtocolStatus()) {
-            case FastCGIConstant::REQUEST_COMPLETE:
+            case Constant::REQUEST_COMPLETE:
                 $this->requestId = $lastRecord->getRequestId();
                 return true;
 
-            case FastCGIConstant::CANT_MPX_CONN:
+            case Constant::CANT_MPX_CONN:
                 throw new FastCGIException('This app can\'t multiplex [CANT_MPX_CONN]');
 
-            case FastCGIConstant::OVERLOADED:
+            case Constant::OVERLOADED:
                 throw new FastCGIException('New request rejected; too busy [OVERLOADED]');
 
-            case FastCGIConstant::UNKNOWN_ROLE:
+            case Constant::UNKNOWN_ROLE:
                 throw new FastCGIException('Role value not known [UNKNOWN_ROLE]');
 
             default:

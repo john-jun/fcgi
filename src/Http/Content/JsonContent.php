@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Http\Content;
 
-use Air\FCgi\ContentInterface;
+use Air\FCgi\Http\ContentInterface;
 use Exception;
 
 /**
@@ -15,36 +15,23 @@ class JsonContent implements ContentInterface
     /** @var array */
     private $data;
 
-    /** @var int */
-    private $encodingDepth;
-
-    /** @var int */
-    private $encodingOptions;
-
     /**
+     * JsonContent constructor.
      * @param array $data
-     * @param int   $options
-     * @param int   $depth
+     * @param int $options
+     * @param int $depth
      */
     public function __construct(array $data, int $options = 0, int $depth = 512)
     {
-        $this->data = $data;
-        $this->encodingDepth = $depth;
-        $this->encodingOptions = $options;
+        $this->data = json_encode($data, $options, $depth);
     }
 
     /**
      * @return string
-     * @throws Exception
      */
     public function getContent(): string
     {
-        $json = json_encode($this->data, $this->encodingOptions, $this->encodingDepth);
-        if (false === $json) {
-            throw new Exception('Could not encode data to JSON');
-        }
-
-        return $json;
+        return $this->data;
     }
 
     /**

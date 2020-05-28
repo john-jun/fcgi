@@ -2,9 +2,8 @@
 namespace Air\FCgi\Test;
 
 use Air\FCgi\Client;
-use Air\FCgi\Http\Content\UrlEncodedContent;
-use Air\FCgi\Http\Stdin\GetStdin;
-use Air\FCgi\Request;
+use Air\FCgi\Http\Content\JsonContent;
+use Air\FCgi\Http\HttpRequest;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
@@ -26,13 +25,16 @@ class ClientTest extends TestCase
 
     public function testMessage()
     {
-        $stdin = new GetStdin(new UrlEncodedContent(['a' => 'b']));
-        $stdin->withRequestUri('poster/share/5ec2086f6da5862738153ffb')
-            ->withScriptFilename('/mof/restful-social/public/index.php');
+        $request = new HttpRequest(1, true);
 
-        $request = new Request($stdin);
+        $request->withMethod('get');
+        $request->withContent(new JsonContent(['a' => 'b']));
+        $request->withRequestUri('/poster/share/xxxxx');
+        $request->withScriptFilename('/mof/restful-social/public/index.php');
+
 
         try {
+            var_dump($this->client->execute($request));
             var_dump($this->client->execute($request));
         } catch (\Exception $e) {
             var_dump($e->getMessage());
