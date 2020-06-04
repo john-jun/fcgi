@@ -99,11 +99,9 @@ class HttpRequest extends Request
         }
 
         Message:
-        parent::getMessage()
-            ->setParams($this->getParams())
-            ->setContent($content ?? '');
+        $this->message->setParams($this->getParams())->setContent($content ?? '');
 
-        return parent::getMessage();
+        return $this->message;
     }
 
     /**

@@ -103,7 +103,7 @@ class Request
             $message .= $params . $paramsEof;
 
             //stdin
-            if (!empty($body = $this->getMessage()->getContent())) {
+            if (!empty($body = $this->message->getContent())) {
                 $stdinList = [];
                 $bodyLength = strlen($body);
                 $stdinLength = 0;

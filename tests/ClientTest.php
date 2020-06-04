@@ -3,6 +3,7 @@ namespace Air\FCgi\Test;
 
 use Air\FCgi\Client;
 use Air\FCgi\Http\Content\JsonContent;
+use Air\FCgi\Http\Content\UrlEncodedContent;
 use Air\FCgi\Http\HttpRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ class ClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = new Client('192.168.30.77', 9000);
+        $this->client = new Client('13.124.222.24', 9000);
     }
 
     protected function tearDown(): void
@@ -25,16 +26,16 @@ class ClientTest extends TestCase
 
     public function testMessage()
     {
-        $request = new HttpRequest(1, true);
+        $request = new HttpRequest(null, true);
 
-        $request->withMethod('get');
-        $request->withContent(new JsonContent(['a' => 'b']));
-        $request->withRequestUri('/poster/share/xxxxx');
-        $request->withScriptFilename('/mof/restful-social/public/index.php');
+        $request->withMethod('GET');
+        $request->withContent(new UrlEncodedContent(['limit' => '20']));
+        $request->withRequestUri('/5d19e0f66da58608ac18aa89/line/newest');
+        $request->withScriptFilename('/var/web/moftech.net/app/service-social/public/index.php');
 
+        //print_r($request->getParams());
 
         try {
-            var_dump($this->client->execute($request));
             var_dump($this->client->execute($request));
         } catch (\Exception $e) {
             var_dump($e->getMessage());
