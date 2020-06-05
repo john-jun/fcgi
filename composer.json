@@ -12,8 +12,8 @@
     "require": {
         "php": "^7.1",
         "ext-json": "*",
-        "john-jun/socket-client": "^1.0",
-        "john-jun/http": "^1.0"
+        "john-jun/http": "^1.0",
+        "john-jun/socket-client": "^1.0"
     },
     "scripts": {
         "test": "phpunit --colors=always tests"

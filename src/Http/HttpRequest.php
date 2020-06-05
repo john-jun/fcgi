@@ -84,8 +84,8 @@ class HttpRequest extends Request
                     if ($this->content instanceof UrlEncodedContent) {
                         $this
                             ->withQueryString($this->content->getContent())
-                            ->withContentType($this->content->getContentType())
-                            ->withContentLength(strlen($this->content->getContent()));
+                            ->withContentType('')
+                            ->withContentLength(0);
 
                         goto Message;
                     }
