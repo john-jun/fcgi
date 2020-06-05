@@ -61,12 +61,8 @@ class Client
 
                 //read 8 byte header
                 do {
-                    $data = $this->socket->recv($length);
-
-                    if (is_string($data)) {
-                        $header .= $data;
-                        $length -= strlen($header);
-                    }
+                    $header .= $this->socket->recv($length);
+                    $length -= strlen($header);
                 } while ($length);
 
                 $type = ord($header[1]);
@@ -76,11 +72,8 @@ class Client
                 //read length content
                 while ($length) {
                     $data = $this->socket->recv($length);
-
-                    if (is_string($data)) {
-                        $length -= strlen($data);
-                        $buffer .= $data;
-                    }
+                    $length -= strlen($data);
+                    $buffer .= $data;
                 }
 
                 if (Constant::END_REQUEST === $type) {

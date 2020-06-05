@@ -41,6 +41,7 @@ class ClientTest extends TestCase
         try {
             var_dump($this->client->execute($request));
             var_dump($this->client->execute($request2));
+            var_dump($this->client->execute($request2));
         } catch (\Exception $e) {
             var_dump($e->getMessage());
             $this->assertInstanceOf(\Exception::class, $e);
