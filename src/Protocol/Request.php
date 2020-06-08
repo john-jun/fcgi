@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Air\FCgi\Protocol;
 
+use Air\FCgi\Message\DefaultMessage;
 use Air\FCgi\Protocol\Record\BeginRequestRecord;
 use Air\FCgi\Protocol\Record\ParamsRecord;
 use Air\FCgi\Protocol\Record\StdinRecord;
@@ -40,9 +41,7 @@ class Request
         $this->keepConn = intval($keepConn);
         $this->requestId = $requestId ?? Constant::DEFAULT_REQUEST_ID;
 
-        if ($message) {
-            $this->setMessage($message);
-        }
+        $this->setMessage($message ?? new DefaultMessage());
     }
 
     /**
@@ -91,43 +90,35 @@ class Request
 
         $message = (string)$begin;
 
-        //if has message
-        if ($this->message) {
-            //params
-            $params = new ParamsRecord($this->getMessage()->getParams());
-            $params->setRequestId($this->getRequestId());
-
-            $paramsEof = new ParamsRecord();
-            $paramsEof->setRequestId($this->getRequestId());
-
-            $message .= $params . $paramsEof;
-
-            //stdin
-            if (!empty($body = $this->message->getContent())) {
-                $stdinList = [];
-                $bodyLength = strlen($body);
-                $stdinLength = 0;
-
-                do {
-                    $stdinList[] = $stdin = new StdinRecord($body);
-                    $stdin->setRequestId($this->getRequestId());
-
-                    $stdinLength += $stdin->getContentLength();
-                    if ($stdinLength === $bodyLength) {
-                        break;
-                    }
-
-                    $body = substr($body, $stdinLength);
-                } while (true);
-
-                $stdinList[] = $stdin = new StdinRecord();
-                $stdin->setRequestId($this->getRequestId());
-
-                $stdin = implode($stdinList);
-                $message .= $stdin;
-            }
+        //params
+        if ($this->getMessage()->getParams()) {
+            $params[] = (new ParamsRecord($this->getMessage()->getParams()))->setRequestId($this->getRequestId());
         }
 
-        return $message;
+        $params[] = (new ParamsRecord())->setRequestId($this->getRequestId());
+        $message .= implode($params);
+
+        //stdin
+        if (!empty($body = $this->message->getContent())) {
+            $stdinList = [];
+            $bodyLength = strlen($body);
+            $stdinLength = 0;
+
+            do {
+                $stdinList[] = $stdin = new StdinRecord($body);
+                $stdin->setRequestId($this->getRequestId());
+
+                $stdinLength += $stdin->getContentLength();
+                if ($stdinLength === $bodyLength) {
+                    break;
+                }
+
+                $body = substr($body, $stdinLength);
+            } while (true);
+        }
+
+        $stdinList[] = (new StdinRecord())->setRequestId($this->getRequestId());
+
+        return $message . implode($stdinList);
     }
 }

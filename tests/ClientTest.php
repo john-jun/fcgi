@@ -16,7 +16,7 @@ class ClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = new Client('13.124.222.24', 9000);
+        $this->client = new Client('13.124.222.24', 9010);
     }
 
     protected function tearDown(): void

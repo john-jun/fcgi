@@ -53,13 +53,18 @@ class HttpRequest extends Request
     private $content = null;
 
     /**
+     * @var bool
+     */
+    private $initContented = false;
+
+    /**
      * HttpRequest constructor.
      * @param int|null $requestId
      * @param bool $keepConn
      */
     public function __construct(int $requestId = null, bool $keepConn = false)
     {
-        parent::__construct($requestId, $keepConn, new DefaultMessage());
+        parent::__construct($requestId, $keepConn);
     }
 
     /**
@@ -75,6 +80,10 @@ class HttpRequest extends Request
      */
     public function getMessage(): MessageInterface
     {
+        if ($this->initContented) {
+            return $this->message;
+        }
+
         if ($this->content instanceof ContentInterface) {
             switch ($this->params['REQUEST_METHOD']) {
                 case 'GET':
@@ -100,6 +109,7 @@ class HttpRequest extends Request
 
         Message:
         $this->message->setParams($this->getParams())->setContent($content ?? '');
+        $this->initContented = true;
 
         return $this->message;
     }
